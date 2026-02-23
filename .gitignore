@@ -1,1 +1,2 @@
-*.json
+/data/raw_documents.json
+/data/crawled_documents.json
