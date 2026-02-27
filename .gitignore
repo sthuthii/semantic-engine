@@ -1,2 +1,22 @@
-/data/raw_documents.json
-/data/crawled_documents.json
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environment
+venv/
+.env/
+
+# Data artifacts
+data/processed/
+data/embeddings/
+
+# Large JSON outputs
+*.json
+!data/raw/raw_documents.json
+
+# But allow raw seed data (optional)
+!data/raw/
+!data/raw/*.json

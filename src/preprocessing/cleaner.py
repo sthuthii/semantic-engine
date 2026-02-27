@@ -42,7 +42,7 @@ def cleaned_document(input_document):
     return cleaned_document
     
 if __name__ == "__main__":
-    with open('data/crawled_documents.json', 'r', encoding='utf-8') as f:
+    with open('data/raw/raw_documents.json', 'r', encoding='utf-8') as f:
         documents = json.load(f)
 
         if isinstance(documents, dict):
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
         cleaned = cleaned_document(documents)
 
-    with open('data/raw_documents.json', "w", encoding='utf-8') as f:
+    with open('data/processed/processed_documents.json', "w", encoding='utf-8') as f:
         json.dump(cleaned, f, indent=2)
 
     print(f"Cleaned {len(cleaned)} documents.")

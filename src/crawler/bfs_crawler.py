@@ -8,9 +8,10 @@ import json
 
 
 class BFSCrawler: #we define a class called bfs crawler
-    def __init__(self, seed_url, max_depth=1, delay=0):
+    def __init__(self, seed_url, max_depth, max_size=50, delay=0):
         self.seed_url = seed_url
         self.max_depth = max_depth
+        self.max_size = max_size
         self.delay = delay
 
         self.visited = set() #visited array for the bfs operation
@@ -49,18 +50,22 @@ class BFSCrawler: #we define a class called bfs crawler
         keywords = [
             "data", "algorithm", "tree", "graph",
             "stack", "queue", "search", "sort",
-            "dynamic", "recursion"
+            "dynamic", "recursion", "linked-list", "list", "array", "hash", "heap", "trie", "dsa", "complexity", "big-O", "time", "space",
+            "leetcode", "avl", "segment-tree", "disjoint-set", "union-find", "bitwise", "greedy"
         ]
 
         url_lower = url.lower()
-        blacklist = ["tag", "category", "about", "write", "jobs", "login"]
+        #blacklist = ["tag", "category", "about", "write", "jobs", "login"]
 
-        if any(word in url_lower for word in blacklist):
-            return False
+        #if any(word in url_lower for word in blacklist):
+           # return False
 
         if any(keyword in url_lower for keyword in keywords):
             return True
 
+        if "geeksforgeeks.org" not in url_lower:
+            return False
+        
         return False
 
     def extract_links(self, soup, base_url):
@@ -77,13 +82,13 @@ class BFSCrawler: #we define a class called bfs crawler
             if self.is_valid_link(clean_url):
                 links.append(clean_url)
 
-        return links[:10]
+        return links[:50]
 
     def crawl(self):
         self.queue.append((self.seed_url, 0))
         self.visited.add(self.seed_url)
 
-        while self.queue:
+        while self.queue and len(self.documents) < 50:
             current_url, depth = self.queue.popleft()
 
             if depth > self.max_depth:
@@ -100,11 +105,12 @@ class BFSCrawler: #we define a class called bfs crawler
             title = soup.title.string.strip() if soup.title else "No Title"
             content = self.extract_text(soup)
 
-            self.documents.append({
-                "url": current_url,
-                "title": title,
-                "content": content
-            })
+            if content.strip():
+                self.documents.append({
+                    "url": current_url,
+                    "title": title,
+                    "content": content
+                })
 
             links = self.extract_links(soup, current_url)
 
@@ -119,10 +125,10 @@ class BFSCrawler: #we define a class called bfs crawler
 
 
 if __name__ == "__main__":
-    seed = "https://www.geeksforgeeks.org/dsa/deque-set-1-introduction-applications/"
+    seed = "https://www.geeksforgeeks.org/dsa/introduction-to-tree-data-structure/"
     crawler = BFSCrawler(seed_url=seed, max_depth=2)
     docs = crawler.crawl()
 
     print(f"\nTotal documents collected: {len(docs)}")
-    with open('data/crawled_documents.json', 'w', encoding='utf-8') as f:
+    with open('data/raw/raw_documents.json', 'w', encoding='utf-8') as f:
         json.dump(docs, f, indent=2)
