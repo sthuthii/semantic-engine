@@ -1,0 +1,12 @@
+numpy
+sentence-transformers
+requests
+beautifulsoup4
+nltk
+json
+re
+requests
+time
+urlib.parse
+collections
+typings
