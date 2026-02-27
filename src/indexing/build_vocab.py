@@ -16,13 +16,14 @@ class VocabularyBuilder:
 
             tokens = tokenize(doc.get("content", ""))
 
-            tf = defaultdict(int)
+            positional_index = defaultdict(list)
 
-            for token in tokens:
-                tf[token] += 1
+            for position, token in enumerate(tokens):
+                positional_index[token].append(position)
                 self.vocabulary.add(token)
 
-            self.term_frequencies[doc_id] = dict(tf)
+            self.term_frequencies[doc_id] = dict(positional_index)
+
 
     def save(self, vocab_path, tf_path):
         os.makedirs(os.path.dirname(vocab_path), exist_ok=True)

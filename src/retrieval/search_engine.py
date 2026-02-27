@@ -57,3 +57,33 @@ class SearchEngine:
             result = result_sets[0] if result_sets else set()
     
         return list(result)
+    
+    def phrase_search(self, phrase):
+        tokens = tokenize(phrase)
+    
+        if not tokens:
+            return []
+    
+        # Get postings for first term
+        postings = self.inverted_index.get(tokens[0], {})
+    
+        candidate_docs = set(postings.keys())
+    
+        for token in tokens[1:]:
+            candidate_docs &= set(self.inverted_index.get(token, {}).keys())
+    
+        results = []
+    
+        for doc_id in candidate_docs:
+            positions_lists = [
+                self.inverted_index[token][doc_id]
+                for token in tokens
+            ]
+    
+            # Check consecutive positions
+            for pos in positions_lists[0]:
+                if all((pos + i) in positions_lists[i] for i in range(1, len(tokens))):
+                    results.append(doc_id)
+                    break
+    
+        return results
